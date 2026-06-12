@@ -181,11 +181,11 @@
       <rect x="398" y="208" width="26" height="40" rx="2" fill="#0d1426" stroke="#5f6b8a"/>
       <rect x="320" y="182" width="26" height="22" rx="2" fill="#ffd45e" opacity="0.85"/>
       <rect x="476" y="182" width="26" height="22" rx="2" fill="#ffd45e" opacity="0.85"/>
-      ${lbl(360, 88, "PV array", "مصفوفة الألواح", "#60a5fa")}
+      ${lbl(360, 88, "PV array", "الألواح الشمسية", "#60a5fa")}
       <!-- inverter on the wall -->
       <rect x="566" y="170" width="44" height="56" rx="6" fill="#182242" stroke="url(#gold)" stroke-width="2"/>
       <text x="588" y="202" fill="#2dd4bf" font-size="13" font-family="monospace" text-anchor="middle">~</text>
-      ${lbl(588, 158, "Inverter", "العاكس", "#ffb020")}
+      ${lbl(588, 158, "Inverter", "الانفرتر", "#ffb020")}
       <!-- battery -->
       <rect x="630" y="186" width="52" height="62" rx="6" fill="#182242" stroke="url(#gold)" stroke-width="2"/>
       ${[0, 1, 2].map((i) => `<rect x="${638}" y="${232 - i * 14}" width="36" height="9" rx="2" fill="#34d399"/>`).join("")}
@@ -199,7 +199,7 @@
       <circle r="4" fill="#ffd45e"><animateMotion dur="3s" repeatCount="indefinite" path="M360 120 L420 150 L566 196"/></circle>
       <circle r="4" fill="#34d399"><animateMotion dur="3.6s" repeatCount="indefinite" path="M610 198 L630 210"/></circle>
       <circle r="4" fill="#ffb020"><animateMotion dur="5s" repeatCount="indefinite" path="M610 178 C700 130 760 122 798 120"/></circle>
-      ${lbl(440, 270, "Loads day & night", "الأحمال ليلاً ونهاراً")}
+      ${lbl(440, 270, "Loads day & night", "كهرباء البيت ليلاً ونهاراً")}
     </svg>`;
   }
 
@@ -224,10 +224,10 @@
       "howitworks",
       head(
         T2("·"),
-        T("How It Works — Sun → Storage", "كيف يعمل — من الشمس إلى التخزين"),
+        T("How It Works — Sun → Storage", "كيف يعمل النظام — من الشمس إلى بيتك"),
         T(
           "Follow one watt from sunlight to the wall socket: capture, regulate, convert, store, deliver.",
-          "تابع واطاً واحداً من ضوء الشمس إلى المقبس: التقاط، تنظيم، تحويل، تخزين، توصيل.",
+          "تابع رحلة الكهرباء خطوة بخطوة: الألواح تلتقط الشمس، والمنظّم يحمي البطارية، والبطارية تخزّن، والانفرتر يشغّل أجهزتك.",
         ),
       ) +
         `<div class="diagram reveal">
@@ -236,13 +236,13 @@
         ${[...Array(8)].map((_, i) => `<line x1="70" y1="60" x2="${70 + 44 * Math.cos(i * 0.785)}" y2="${60 + 44 * Math.sin(i * 0.785)}" stroke="#ffd45e" stroke-width="2" opacity="0.7"/>`).join("")}
         ${flowNode(150, 120, "☀→⚡", T("Panels", "الألواح"), "DC")}
         ${flowArrow(250, 150)}
-        ${flowNode(300, 120, "⛰", T("Controller / MPPT", "المنظّم / MPPT"), "DC")}
+        ${flowNode(300, 120, "⛰", T("Controller / MPPT", "منظّم الشحن"), "DC")}
         ${flowArrow(400, 150)}
-        ${flowNode(450, 120, "🔋", T("Battery bank", "بنك البطاريات"), T("store", "تخزين"))}
+        ${flowNode(450, 120, "🔋", T("Battery bank", "البطاريات"), T("store", "تخزين"))}
         ${flowArrow(550, 150)}
-        ${flowNode(600, 120, "🔌", T("Inverter", "العاكس"), "AC")}
+        ${flowNode(600, 120, "🔌", T("Inverter", "الانفرتر"), "AC")}
         ${flowArrow(700, 150)}
-        ${flowNode(750, 120, "🏠", T("Home / Grid", "المنزل / الشبكة"), "230V")}
+        ${flowNode(750, 120, "🏠", T("Home / Grid", "البيت / الشبكة"), "230V")}
         <circle r="5" fill="#ffb020"><animateMotion dur="4s" repeatCount="indefinite" path="M150 150 L300 150 L450 150 L600 150 L750 150"/></circle>
       </svg>
     </div>
@@ -252,42 +252,42 @@
         T("1 · Capture", "1 · الالتقاط"),
         T(
           "Sunlight hits the PV cells and frees electrons, producing low-voltage DC electricity that rises with sunlight intensity.",
-          "يضرب الضوء الخلايا فيحرّر الإلكترونات منتجاً تياراً مستمراً منخفض الجهد يزداد مع شدة الإشعاع.",
+          "ضوء الشمس يسقط على الخلايا فتتولد كهرباء، وكلما قويت الشمس زاد الإنتاج.",
         ),
       ],
       [
         T("2 · Regulate", "2 · التنظيم"),
         T(
           "An MPPT charge controller (or the hybrid inverter's MPPT) tracks the panels' optimal voltage and feeds the battery a safe, high-efficiency charge.",
-          "يتتبّع منظّم MPPT (أو MPPT داخل العاكس الهجين) جهد الألواح الأمثل ويغذّي البطارية شحناً آمناً عالي الكفاءة.",
+          "منظّم الشحن MPPT (أو الموجود داخل الانفرتر الهجين) يلاحق أفضل نقطة إنتاج للألواح ويشحن البطارية بأمان وكفاءة.",
         ),
       ],
       [
-        T("3 · Store at high voltage", "3 · التخزين بجهد عالٍ"),
+        T("3 · Store at high voltage", "3 · التخزين"),
         T(
           "Modern home batteries stack cells into a high-voltage (≈48–400 V) DC bank — higher voltage means lower current, thinner cables and less loss.",
-          "تكدّس بطاريات المنازل الحديثة الخلايا في بنك DC عالي الجهد (≈48–400 فولت) — الجهد الأعلى يعني تياراً أقل وكابلات أنحف وفقداً أقل.",
+          "بطاريات البيوت الحديثة تعمل بجهد عالٍ (48–400 فولت) — جهد أعلى يعني تياراً أقل، وكابلات أرفع، وفقداً أقل في الطاقة.",
         ),
       ],
       [
         T("4 · Convert", "4 · التحويل"),
         T(
           "The inverter turns stored/solar DC into clean 230 V (or 120 V) AC sine-wave power the home's appliances actually use.",
-          "يحوّل العاكس التيار المستمر المخزَّن/الشمسي إلى تيار متردد جيبي نظيف 230 فولت (أو 120) تستخدمه أجهزة المنزل فعلياً.",
+          "الانفرتر يحوّل الكهرباء المخزّنة أو القادمة من الألواح إلى كهرباء 230 فولت نظيفة تشغّل كل أجهزة البيت.",
         ),
       ],
       [
-        T("5 · Deliver & export", "5 · التوصيل والتصدير"),
+        T("5 · Deliver & export", "5 · التشغيل والبيع"),
         T(
           "AC power flows to your loads first; any surplus charges the battery or exports to the grid for credit.",
-          "يتدفّق التيار المتردد إلى أحمالك أولاً؛ وأي فائض يشحن البطارية أو يُصدَّر للشبكة مقابل رصيد.",
+          "الكهرباء تذهب لأجهزتك أولاً، والفائض يشحن البطارية أو يُباع للشبكة ويُخصم من فاتورتك.",
         ),
       ],
       [
-        T("6 · At night", "6 · ليلاً"),
+        T("6 · At night", "6 · في الليل"),
         T(
           "When the sun is gone the inverter pulls from the battery (then the grid) so the home runs seamlessly 24/7.",
-          "عند غياب الشمس يسحب العاكس من البطارية (ثم الشبكة) ليعمل المنزل بسلاسة على مدار الساعة.",
+          "عند غياب الشمس يسحب الانفرتر من البطارية (ثم من الشبكة) فيعمل البيت بشكل طبيعي على مدار الساعة.",
         ),
       ],
     ]
@@ -330,7 +330,7 @@
         T("Solar System Components", "مكوّنات النظام الشمسي"),
         T(
           "The seven building blocks of every residential installation.",
-          "اللبنات السبع لكل تركيب منزلي.",
+          "سبع قطع أساسية يتكوّن منها أي نظام شمسي منزلي.",
         ),
       ) +
         `<div class="grid g3">${DATA.COMPONENTS.map(compCard).join("")}</div>`,
@@ -351,14 +351,17 @@
       <p>${tr(c.note)}</p><div class="badge gold">${tr(U.best_use)}: ${tr(c.use)}</div></div>`,
           )
           .join("")}</div>` +
-        table(DATA.PANELS.table.head, DATA.PANELS.table.rows),
+        table(
+          DATA.PANELS.table.head.map((h) => tr(h)),
+          DATA.PANELS.table.rows.map((r) => r.map((x) => tr(x))),
+        ),
     );
 
   /* 4 Inverters */
   const secInverters = () =>
     S(
       "inverters",
-      head(T2("04"), T("Inverter Comparison", "مقارنة العاكسات")) +
+      head(T2("04"), T("Inverter Comparison", "مقارنة الانفرترات (العواكس)")) +
         `<div class="grid g4">${DATA.INVERTERS.cards
           .map(
             (
@@ -377,15 +380,15 @@
   const secBatteries = () =>
     S(
       "batteries",
-      head(T2("05"), T("Battery Technologies", "تقنيات البطاريات")) +
+      head(T2("05"), T("Battery Technologies", "أنواع البطاريات")) +
         `<div class="grid g4" style="margin-bottom:24px">${DATA.BATTERIES.rows
           .map(
             (
               r,
               i,
             ) => `<div class="card reveal" data-d="${(i % 4) + 1}">${art(r.img)}
-        <h3>${r.c[0]}</h3><div class="role">${tr(DATA.BATTERIES.head[1])}: ${r.c[1]}</div>
-        <p>${tr(r.c[4])}</p><div class="badge gold">DoD: ${r.c[2]}</div></div>`,
+        <h3>${tr(r.c[0])}</h3><div class="role">${tr(DATA.BATTERIES.head[1])}: ${r.c[1]}</div>
+        <p>${tr(r.c[4])}</p><div class="badge gold">${tr(T("Usable (DoD)", "الاستخدام الآمن"))}: ${r.c[2]}</div></div>`,
           )
           .join("")}</div>` +
         table(
@@ -399,7 +402,7 @@
   const secBrands = () =>
     S(
       "brands",
-      head(T2("06"), T("Recommended Equipment Brands", "العلامات الموصى بها")) +
+      head(T2("06"), T("Recommended Equipment Brands", "أفضل الماركات الموصى بها")) +
         DATA.BRANDS.groups
           .map(
             (
@@ -420,13 +423,13 @@
   const secSizes = () =>
     S(
       "sizing",
-      head(T2("07"), T("System Size Examples", "أمثلة على أحجام الأنظمة")) +
+      head(T2("07"), T("System Size Examples", "أحجام الأنظمة — كم يحتاج بيتك؟")) +
         `<div class="grid g4">${DATA.SIZES.map(
           (
             s,
             i,
           ) => `<div class="card reveal" data-d="${(i % 4) + 1}">${art(s.img)}
-      <h3>${tr(s.tier)}</h3><div class="role">${s.kw}</div>
+      <h3>${tr(s.tier)}</h3><div class="role">${tr(s.kw)}</div>
       <ul class="specs"><li><span>${tr(U.components_list)}</span><span>${tr(s.comp)}</span></li>
       <li><span>${tr(U.daily_prod)}</span><span>${tr(s.prod)}</span></li></ul></div>`,
         ).join("")}</div>`,
@@ -438,10 +441,10 @@
       "acsizing",
       head(
         T2("08"),
-        T("Air-Conditioner Solar Sizing", "تحجيم الطاقة الشمسية للمكيّفات"),
+        T("Air-Conditioner Solar Sizing", "كم يحتاج مكيفك من الطاقة الشمسية؟"),
         T(
           "How much solar each AC load needs.",
-          "كم تحتاج كل وحدة تكييف من طاقة شمسية.",
+          "جدول مبسّط يوضح ما يحتاجه كل حجم مكيف.",
         ),
       ) +
         table(
@@ -455,7 +458,7 @@
   const secAdvanced = () =>
     S(
       "advanced",
-      head(T2("09"), T("Advanced Solar Solutions", "حلول شمسية متقدّمة")) +
+      head(T2("09"), T("Advanced Solar Solutions", "حلول متقدمة")) +
         `<div class="grid g3">${DATA.ADVANCED.map(
           (a, i) => `<div class="card reveal" data-d="${(i % 3) + 1}">
       <div style="font-size:34px;margin-bottom:8px">${a.i}</div><h3>${tr(a.h)}</h3><p>${tr(a.p)}</p></div>`,
@@ -477,10 +480,10 @@
   const secFinance = () =>
     S(
       "finance",
-      head(T2("12"), T("Financial Analysis", "التحليل المالي")) +
+      head(T2("12"), T("Financial Analysis", "التكلفة والتوفير")) +
         table(
           DATA.FINANCE.head.map((h) => tr(h)),
-          DATA.FINANCE.rows,
+          DATA.FINANCE.rows.map((r) => r.map((x) => tr(x))),
         ) +
         `<p class="prose" style="margin-top:16px">${tr(DATA.FINANCE.note)}</p>`,
     );
@@ -495,7 +498,7 @@
         T("Final Recommendation", "التوصية النهائية"),
         T(
           "Five tiers, from first-bill-saver to ultimate residential build.",
-          "خمس فئات، من توفير أول فاتورة إلى أرقى تركيب منزلي.",
+          "خمسة مستويات: من أرخص نظام يوفّر في فاتورتك إلى أفخم تركيب منزلي.",
         ),
       ) +
         `<div class="rank">${DATA.RANK.map(
