@@ -46,12 +46,20 @@ html {
 }
 body {
   font-family: "Spline Sans", system-ui, sans-serif;
-  background: var(--bg);
-  background-attachment: fixed;
+  background: var(--night);
   color: var(--text);
   line-height: 1.7;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+/* Fixed gradient backdrop as its own layer — avoids `background-attachment:fixed`,
+   which mobile browsers (esp. iOS Safari) drop, leaving sections blank/white. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
 }
 html[dir="rtl"] body {
   font-family: "Tajawal", sans-serif;
@@ -653,10 +661,20 @@ td b {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .flow-svg {
   width: 100%;
   height: auto;
+}
+.swipe-hint {
+  display: none;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+  margin-top: 8px;
+  text-align: center;
 }
 
 /* FOOTER */
@@ -772,6 +790,47 @@ td b {
   }
   .pros-cons {
     grid-template-columns: 1fr;
+  }
+  /* Tighter rhythm + bigger tap targets on phones */
+  .section {
+    padding: 48px 0;
+  }
+  .hero {
+    min-height: auto;
+    padding: 104px 18px 56px;
+  }
+  .hero-cta {
+    gap: 10px;
+  }
+  .hero-cta .btn-solid,
+  .hero-cta .btn-ghost {
+    flex: 1;
+    text-align: center;
+    padding: 14px 18px;
+  }
+  .hero-stats b {
+    font-size: 30px;
+  }
+  .card {
+    padding: 18px;
+  }
+  .specs li {
+    font-size: 12.5px;
+  }
+  /* Energy-flow diagram: keep nodes legible, let the user swipe it */
+  .flow-svg {
+    min-width: 640px;
+  }
+  .swipe-hint {
+    display: block;
+  }
+  /* Rank rows: stack price under text instead of cramping 3 columns */
+  .rank-row {
+    grid-template-columns: 44px 1fr;
+    gap: 10px 14px;
+  }
+  .rank-price {
+    grid-column: 2;
   }
 }
 @media (prefers-reduced-motion: reduce) {

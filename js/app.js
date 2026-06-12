@@ -136,6 +136,7 @@
         <circle r="5" fill="#ffb020"><animateMotion dur="4s" repeatCount="indefinite" path="M150 150 L300 150 L450 150 L600 150 L750 150"/></circle>
       </svg>
     </div>
+    <div class="swipe-hint">${tr(T("← swipe the diagram →", "← اسحب المخطط →"))}</div>
     <div class="grid g3" style="margin-top:22px">${[
       [
         T("1 · Capture", "1 · الالتقاط"),
