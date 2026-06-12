@@ -22,7 +22,7 @@ const UI = {
     "من الفوتون إلى استرداد التكلفة — مرجع هندسي احترافي يغطي كل مكوّن ومقارنة وحساب وقرار مالي وراء تشغيل المنزل بالطاقة الشمسية.",
   ),
   hero_btn1: T("Start the Guide", "ابدأ الدليل"),
-  hero_btn2: T("Open Calculators", "افتح الحاسبات"),
+  hero_btn2: T("Browse Components", "تصفّح المكوّنات"),
   stat_years: T("yr panel life", "سنة عمر اللوح"),
   stat_eff: T("% peak efficiency", "% أقصى كفاءة"),
   stat_payback: T("yr typical payback", "سنة استرداد نموذجي"),

@@ -366,47 +366,6 @@
     );
 
   /* 13 Calculators */
-  const secCalc = () =>
-    S(
-      "calculators",
-      head(
-        T2("13"),
-        T("Engineering Calculators", "حاسبات هندسية"),
-        T(
-          "Rough sizing in seconds — then verify with an installer.",
-          "تحجيم تقريبي في ثوانٍ — ثم تحقّق مع فنّي.",
-        ),
-      ) +
-        `<div class="grid g2">
-      <div class="calc reveal"><h3><span class="ic">⚡</span>${tr(T("Daily consumption", "الاستهلاك اليومي"))}</h3>
-        <div class="field"><label>${tr(T("Monthly bill (kWh)", "الفاتورة الشهرية (ك.و.س)"))}</label><input id="c1_kwh" type="number" value="900"></div>
-        <div class="calc-out"><div class="big" id="c1_out">30 kWh</div><div class="row"><span>${tr(T("Daily average", "المتوسط اليومي"))}</span><span id="c1_day">30 kWh/day</span></div></div></div>
-
-      <div class="calc reveal" data-d="1"><h3><span class="ic">☀</span>${tr(T("Panel sizing", "تحجيم الألواح"))}</h3>
-        <div class="field"><label>${tr(T("Daily usage (kWh)", "الاستهلاك اليومي (ك.و.س)"))}</label><input id="c2_use" type="number" value="30"></div>
-        <div class="field"><label>${tr(T("Peak sun hours", "ساعات الذروة الشمسية"))}</label><input id="c2_psh" type="number" value="5"></div>
-        <div class="field"><label>${tr(T("Panel watt", "قدرة اللوح (واط)"))}</label><input id="c2_w" type="number" value="400"></div>
-        <div class="calc-out"><div class="big" id="c2_sys">7.1 kW</div><div class="row"><span>${tr(U.panels_req)}</span><span id="c2_panels">18</span></div></div></div>
-
-      <div class="calc reveal" data-d="2"><h3><span class="ic">🔋</span>${tr(T("Battery sizing", "تحجيم البطارية"))}</h3>
-        <div class="field"><label>${tr(T("Backup needed (kWh)", "الاحتياطي المطلوب (ك.و.س)"))}</label><input id="c3_need" type="number" value="15"></div>
-        <div class="field"><label>${tr(T("Usable DoD %", "عمق التفريغ المتاح %"))}</label><input id="c3_dod" type="number" value="90"></div>
-        <div class="calc-out"><div class="big" id="c3_out">16.7 kWh</div><div class="row"><span>${tr(T("Recommended bank", "البنك الموصى به"))}</span><span id="c3_bank">~17 kWh LFP</span></div></div></div>
-
-      <div class="calc reveal" data-d="3"><h3><span class="ic">🔌</span>${tr(T("Inverter sizing", "تحجيم العاكس"))}</h3>
-        <div class="field"><label>${tr(T("Peak load (kW)", "الحمل الأقصى (ك.و)"))}</label><input id="c4_load" type="number" value="6"></div>
-        <div class="calc-out"><div class="big" id="c4_out">7.8 kW</div><div class="row"><span>${tr(T("With 30% surge margin", "مع هامش اندفاع 30%"))}</span><span id="c4_note">round up to standard size</span></div></div></div>
-
-      <div class="calc reveal g2span" style="grid-column:1/-1"><h3><span class="ic">💰</span>${tr(T("Monthly savings estimate", "تقدير التوفير الشهري"))}</h3>
-        <div class="grid g3" style="gap:14px">
-          <div class="field"><label>${tr(T("System size (kW)", "حجم النظام (ك.و)"))}</label><input id="c5_kw" type="number" value="5"></div>
-          <div class="field"><label>${tr(T("Peak sun hours", "ساعات الذروة الشمسية"))}</label><input id="c5_psh" type="number" value="5"></div>
-          <div class="field"><label>${tr(T("Tariff ($/kWh)", "التعرفة ($/ك.و.س)"))}</label><input id="c5_rate" type="number" step="0.01" value="0.15"></div>
-        </div>
-        <div class="calc-out"><div class="big" id="c5_out">$112 / mo</div><div class="row"><span>${tr(T("Annual saving", "التوفير السنوي"))}</span><span id="c5_yr">$1,350 / yr</span></div></div></div>
-    </div>`,
-    );
-
   /* 15 Ranking */
   const secRank = () =>
     S(
@@ -453,10 +412,8 @@
       secAdvanced() +
       secGuides() +
       secFinance() +
-      secCalc() +
       secRank();
     applyI18nStatic();
-    wireCalcs();
     observeReveal();
   }
 
@@ -470,46 +427,6 @@
       const k = el.dataset.i18n;
       if (U[k]) el.textContent = tr(U[k]);
     });
-  }
-
-  /* ---------- calculators ---------- */
-  function num(id) {
-    return parseFloat(document.getElementById(id)?.value) || 0;
-  }
-  function set(id, v) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = v;
-  }
-  function wireCalcs() {
-    const calc = () => {
-      const day = num("c1_kwh") / 30;
-      set("c1_out", day.toFixed(1) + " kWh");
-      set(
-        "c1_day",
-        day.toFixed(1) + (lang === "ar" ? " ك.و.س/يوم" : " kWh/day"),
-      );
-      const sys = num("c2_use") / Math.max(num("c2_psh"), 0.1) / 0.8;
-      set("c2_sys", sys.toFixed(1) + " kW");
-      set(
-        "c2_panels",
-        Math.ceil((sys * 1000) / Math.max(num("c2_w"), 1)).toString(),
-      );
-      const bank = num("c3_need") / (Math.max(num("c3_dod"), 1) / 100);
-      set("c3_out", bank.toFixed(1) + " kWh");
-      set("c3_bank", "~" + Math.ceil(bank) + " kWh LFP");
-      const inv = num("c4_load") * 1.3;
-      set("c4_out", inv.toFixed(1) + " kW");
-      const mo = num("c5_kw") * num("c5_psh") * 30 * num("c5_rate");
-      set("c5_out", "$" + mo.toFixed(0) + (lang === "ar" ? " /شهر" : " / mo"));
-      set(
-        "c5_yr",
-        "$" + (mo * 12).toFixed(0) + (lang === "ar" ? " /سنة" : " / yr"),
-      );
-    };
-    document
-      .querySelectorAll(".calc input")
-      .forEach((i) => i.addEventListener("input", calc));
-    calc();
   }
 
   /* ---------- reveal on scroll ---------- */
