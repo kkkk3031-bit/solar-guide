@@ -76,16 +76,84 @@
       svg(
         `<rect x="120" y="32" width="80" height="90" rx="8" fill="#182242" stroke="url(#gold)" stroke-width="2"/><path d="M150 96 L160 60 L168 78 L178 54" stroke="#34d399" stroke-width="3" fill="none"/><text x="160" y="116" fill="#93a0c2" font-size="8" text-anchor="middle" font-family="monospace">NO GRID</text>`,
       ),
-    bat_lfp: () => ART.battery(),
-    bat_liion: () => ART.battery(),
-    bat_agm: () => ART.battery(),
-    bat_gel: () => ART.battery(),
-    sys3: () => ART.panel(),
-    sys5: () => ART.panel(),
-    sys10: () => ART.panel(),
-    sys20: () => ART.panel(),
+    bat_lfp: () => batArt("LiFePO4", 4, "#34d399"),
+    bat_liion: () => batArt("Li-ion NMC", 3, "#60a5fa"),
+    bat_agm: () => leadArt("AGM", "#93a0c2"),
+    bat_gel: () => leadArt("GEL", "#2dd4bf"),
+    sys3: () => houseArt(1, 4, false),
+    sys5: () => houseArt(2, 4, false),
+    sys10: () => houseArt(2, 6, false),
+    sys20: () => houseArt(3, 6, true),
   };
   const art = (k) => (ART[k] ? ART[k]() : ART.panel());
+
+  /* distinct lithium battery cabinet — colored charge bars + chemistry label */
+  function batArt(label, bars, color) {
+    return svg(
+      `<rect x="118" y="30" width="84" height="92" rx="8" fill="#182242" stroke="url(#gold)" stroke-width="2"/>
+       <rect x="148" y="22" width="24" height="10" rx="3" fill="url(#gold)"/>
+       ${[0, 1, 2, 3]
+         .map(
+           (i) =>
+             `<rect x="128" y="${102 - i * 18}" width="64" height="12" rx="2" fill="${i < bars ? color : "#1f2b4d"}"/>`,
+         )
+         .join("")}
+       <text x="160" y="138" fill="${color}" font-size="11" font-family="monospace" text-anchor="middle" font-weight="bold">${label}</text>`,
+    );
+  }
+
+  /* lead-acid style box — terminals + electrolyte wave */
+  function leadArt(label, color) {
+    return svg(
+      `<rect x="100" y="52" width="120" height="68" rx="6" fill="#182242" stroke="url(#gold)" stroke-width="2"/>
+       <rect x="112" y="40" width="14" height="14" rx="2" fill="#fb7185"/>
+       <rect x="194" y="40" width="14" height="14" rx="2" fill="#5f6b8a"/>
+       <text x="119" y="36" fill="#fb7185" font-size="10" font-family="monospace" text-anchor="middle">+</text>
+       <text x="201" y="36" fill="#93a0c2" font-size="10" font-family="monospace" text-anchor="middle">−</text>
+       <path d="M104 100 q14 -8 28 0 t28 0 t28 0 t28 0" stroke="${color}" stroke-width="2.5" fill="none" opacity="0.7"/>
+       <text x="160" y="86" fill="${color}" font-size="14" font-family="monospace" text-anchor="middle" font-weight="bold">${label}</text>
+       <text x="160" y="138" fill="#93a0c2" font-size="9" font-family="monospace" text-anchor="middle">12V DEEP CYCLE</text>`,
+    );
+  }
+
+  /* scaled house scene — panel count grows with system size; villa gets an EV charger */
+  function houseArt(rows, cols, ev) {
+    const pw = 20,
+      ph = 13,
+      gap = 3;
+    const gw = cols * (pw + gap) - gap;
+    const gh = rows * (ph + gap) - gap;
+    const hw = Math.max(gw + 24, 110);
+    const hx = 160 - hw / 2;
+    const bodyY = 90;
+    const grid = [];
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++)
+        grid.push(
+          `<rect x="${c * (pw + gap)}" y="${r * (ph + gap)}" width="${pw}" height="${ph}" rx="1.5" fill="url(#cell)" stroke="#3b82f6" stroke-width="0.5"/>`,
+        );
+    return svg(
+      `<circle cx="44" cy="34" r="16" fill="url(#gold)" opacity="0.9"/>
+       ${[0, 1, 2, 3, 4, 5]
+         .map(
+           (i) =>
+             `<line x1="44" y1="34" x2="${44 + 26 * Math.cos(i * 1.047)}" y2="${34 + 26 * Math.sin(i * 1.047)}" stroke="#ffd45e" stroke-width="1.5" opacity="0.6"/>`,
+         )
+         .join("")}
+       <line x1="24" y1="134" x2="296" y2="134" stroke="#5f6b8a" stroke-width="3"/>
+       <rect x="${hx}" y="${bodyY}" width="${hw}" height="44" rx="4" fill="#182242" stroke="#5f6b8a"/>
+       <rect x="151" y="110" width="18" height="24" rx="2" fill="#0d1426" stroke="#5f6b8a"/>
+       <rect x="${hx + 12}" y="${bodyY + 12}" width="14" height="12" rx="2" fill="#ffd45e" opacity="0.8"/>
+       <g transform="translate(${160 - gw / 2} ${bodyY - gh - 8})">${grid.join("")}</g>
+       ${
+         ev
+           ? `<rect x="${hx + hw + 12}" y="102" width="16" height="32" rx="3" fill="#182242" stroke="#2dd4bf" stroke-width="1.5"/>
+              <circle cx="${hx + hw + 20}" cy="112" r="4" fill="#2dd4bf"/>
+              <text x="${hx + hw + 20}" y="148" fill="#2dd4bf" font-size="8" font-family="monospace" text-anchor="middle">EV</text>`
+           : ""
+       }`,
+    );
+  }
 
   /* ---------- section helpers ---------- */
   const head = (num, title, lead) =>
@@ -95,11 +163,53 @@
     return `<section class="section" id="${id}">${inner}</section>`;
   }
 
+  /* wide hero illustration — anatomy of a solar home */
+  function introScene() {
+    const lbl = (x, y, en, ar, color = "#93a0c2") =>
+      `<text x="${x}" y="${y}" fill="${color}" font-size="11" font-family="monospace" text-anchor="middle">${tr(T(en, ar))}</text>`;
+    return `<svg class="flow-svg" viewBox="0 0 920 300" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">${G}
+      <rect width="100%" height="100%" rx="14" fill="url(#sky)"/>
+      <circle cx="100" cy="70" r="34" fill="url(#gold)"><animate attributeName="r" values="34;37;34" dur="4s" repeatCount="indefinite"/></circle>
+      ${[...Array(8)].map((_, i) => `<line x1="100" y1="70" x2="${100 + 50 * Math.cos(i * 0.785)}" y2="${70 + 50 * Math.sin(i * 0.785)}" stroke="#ffd45e" stroke-width="2" opacity="0.6"/>`).join("")}
+      <line x1="40" y1="248" x2="880" y2="248" stroke="#5f6b8a" stroke-width="3"/>
+      <!-- house -->
+      <rect x="300" y="160" width="240" height="88" rx="4" fill="#182242" stroke="#5f6b8a" stroke-width="1.5"/>
+      <polygon points="290,160 420,95 550,160" fill="#131c33" stroke="#5f6b8a" stroke-width="1.5"/>
+      <g transform="translate(318 146) rotate(-26.5)">
+        ${[0, 1, 2].map((c) => `<rect x="${c * 36}" y="0" width="32" height="22" rx="2" fill="url(#cell)" stroke="#3b82f6" stroke-width="0.8"/>`).join("")}
+      </g>
+      <rect x="398" y="208" width="26" height="40" rx="2" fill="#0d1426" stroke="#5f6b8a"/>
+      <rect x="320" y="182" width="26" height="22" rx="2" fill="#ffd45e" opacity="0.85"/>
+      <rect x="476" y="182" width="26" height="22" rx="2" fill="#ffd45e" opacity="0.85"/>
+      ${lbl(360, 88, "PV array", "مصفوفة الألواح", "#60a5fa")}
+      <!-- inverter on the wall -->
+      <rect x="566" y="170" width="44" height="56" rx="6" fill="#182242" stroke="url(#gold)" stroke-width="2"/>
+      <text x="588" y="202" fill="#2dd4bf" font-size="13" font-family="monospace" text-anchor="middle">~</text>
+      ${lbl(588, 158, "Inverter", "العاكس", "#ffb020")}
+      <!-- battery -->
+      <rect x="630" y="186" width="52" height="62" rx="6" fill="#182242" stroke="url(#gold)" stroke-width="2"/>
+      ${[0, 1, 2].map((i) => `<rect x="${638}" y="${232 - i * 14}" width="36" height="9" rx="2" fill="#34d399"/>`).join("")}
+      ${lbl(656, 176, "Battery", "البطارية", "#34d399")}
+      <!-- grid pole -->
+      <line x1="800" y1="248" x2="800" y2="110" stroke="#5f6b8a" stroke-width="5"/>
+      <line x1="770" y1="120" x2="830" y2="120" stroke="#5f6b8a" stroke-width="4"/>
+      <path d="M610 178 C700 130 760 122 798 120" stroke="#ffb020" stroke-width="1.5" fill="none" opacity="0.8"/>
+      ${lbl(800, 270, "Grid", "الشبكة")}
+      <!-- energy dots -->
+      <circle r="4" fill="#ffd45e"><animateMotion dur="3s" repeatCount="indefinite" path="M360 120 L420 150 L566 196"/></circle>
+      <circle r="4" fill="#34d399"><animateMotion dur="3.6s" repeatCount="indefinite" path="M610 198 L630 210"/></circle>
+      <circle r="4" fill="#ffb020"><animateMotion dur="5s" repeatCount="indefinite" path="M610 178 C700 130 760 122 798 120"/></circle>
+      ${lbl(440, 270, "Loads day & night", "الأحمال ليلاً ونهاراً")}
+    </svg>`;
+  }
+
   /* 1 Intro */
   const secIntro = () =>
     S(
       "intro",
       head(U.nav_intro_n || T2("01"), DATA.INTRO.title, DATA.INTRO.lead) +
+        `<div class="diagram reveal" style="margin-bottom:22px">${introScene()}</div>
+        <div class="swipe-hint">${tr(T("← swipe the diagram →", "← اسحب المخطط →"))}</div>` +
         `<div class="grid g2">${DATA.INTRO.blocks
           .map(
             (b, i) =>
@@ -268,6 +378,16 @@
     S(
       "batteries",
       head(T2("05"), T("Battery Technologies", "تقنيات البطاريات")) +
+        `<div class="grid g4" style="margin-bottom:24px">${DATA.BATTERIES.rows
+          .map(
+            (
+              r,
+              i,
+            ) => `<div class="card reveal" data-d="${(i % 4) + 1}">${art(r.img)}
+        <h3>${r.c[0]}</h3><div class="role">${tr(DATA.BATTERIES.head[1])}: ${r.c[1]}</div>
+        <p>${tr(r.c[4])}</p><div class="badge gold">DoD: ${r.c[2]}</div></div>`,
+          )
+          .join("")}</div>` +
         table(
           DATA.BATTERIES.head.map((h) => tr(h)),
           DATA.BATTERIES.rows.map((r) => r.c.map((x) => tr(x))),

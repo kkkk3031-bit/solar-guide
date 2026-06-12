@@ -43,6 +43,10 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 84px;
+  overflow-x: hidden;
+  /* stop iOS/Android font inflation from blowing up the layout */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 body {
   font-family: "Spline Sans", system-ui, sans-serif;
@@ -386,6 +390,7 @@ html[dir="rtl"] .btn-ghost {
   transition: 0.25s;
   position: relative;
   overflow: hidden;
+  min-width: 0; /* let grid cells shrink instead of overflowing the phone viewport */
 }
 .card:hover {
   border-color: var(--amber);
@@ -831,6 +836,62 @@ td b {
   }
   .rank-price {
     grid-column: 2;
+  }
+}
+/* Small phones (≤420px): tighter chrome, readable tables, no cramped nav */
+@media (max-width: 420px) {
+  .nav {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .logo {
+    font-size: 17px;
+  }
+  .pill {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+  .container {
+    padding: 0 14px;
+  }
+  .section {
+    padding: 40px 0;
+  }
+  .sec-head {
+    margin-bottom: 28px;
+  }
+  .hero {
+    padding: 96px 14px 48px;
+  }
+  .hero h1 {
+    font-size: 31px;
+  }
+  .hero-stats {
+    gap: 16px;
+  }
+  .hero-stats b {
+    font-size: 26px;
+  }
+  .sun {
+    width: 320px;
+    height: 320px;
+    top: -120px;
+    inset-inline-end: -140px;
+  }
+  th,
+  td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .rank-row {
+    padding: 14px 14px;
+  }
+  .footer {
+    padding: 36px 14px;
+  }
+  .to-top {
+    bottom: 16px;
+    inset-inline-end: 16px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
